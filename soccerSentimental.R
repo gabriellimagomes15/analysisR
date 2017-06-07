@@ -97,23 +97,8 @@ sentimentalAPIMs <- function(commentsDF){ ## commentsDF is in Json
   return(request_body_twitter)
 }
 
-## Function to do cluster of the words
-clusterDend <- function(data){
-  corpus <- Corpus(VectorSource(data))
-  tdm <- TermDocumentMatrix(corpus)
-  tdm <- removeSparseTerms(tdm, sparse = 0.10)
-  df  <- as.data.frame(inspect(tdm))
-  df.scale <- scale(df)
-  d <- dist(df.scale, method = "euclidean")
-  fit.ward2 <- hclust(d, method = "ward.D2")
-  return(fit.ward2)
-}
 ###########################################################################################################################
 ###########################################################################################################################
-
-
-
-
 
 ## Authentication Facebook Developer
 appId  = "YOUR APP ID"
@@ -140,9 +125,6 @@ fluMessag  <- fluComents %>%
 names(fluMessag) <- "text"    ## RENAME COLUMN
 fluClear <- cleanComments(fluMessag) ## CLEAR MESSAGES
 
-fitFlu <- clusterDend(fluClear) ## DOING CLUSTER OF WORDS
-plot(fitFlu) ## PLOT CLUSTER OF WORDS
-rect.hclust(fitFlu, k=5)
 
 fluClear2 <- fluClear %>%
               slice(c(1:500,1001:1500)) ## SELECT JUST 1000 ROWS
@@ -163,9 +145,6 @@ vascoMessag  <- vascoComents %>%
 names(vascoMessag) <- "text"    ## RENAME COLUMN
 vascoClear <- cleanComments(vascoMessag) ## CLEAR MESSAGES
 
-fitVasco <- clusterDend(vascoClear) ## DOING CLUSTER OF WORDS
-plot(fitVasco) ## PLOT CLUSTER OF WORDS
-rect.hclust(fitVasco, k=5)
 
 vascoClear2 <- vascoClear %>%
                 slice(c(1:500,1001:1500)) ## SELECT JUST 1000 ROWS
@@ -186,9 +165,6 @@ botaMessag  <- botaComents %>%
 names(botaMessag) <- "text"    ## RENAME COLUMN
 botaClear <- cleanComments(botaMessag) ## CLEAR MESSAGES
 
-fitBota <- clusterDend(botaClear) ## DOING CLUSTER OF WORDS
-plot(fitBota) ## PLOT CLUSTER OF WORDS
-rect.hclust(fitBota, k=5)
 
 botaClear2 <- botaClear %>%
                 slice(c(1:500,1001:1500)) ## SELECT JUST 1000 ROWS
@@ -209,9 +185,6 @@ flaMessag  <- flaComents %>%
 names(flaMessag) <- "text"    ## RENAME COLUMN
 flaClear <- cleanComments(flaMessag) ## CLEAR MESSAGES
 
-fitFla <- clusterDend(flaClear) ## DOING CLUSTER OF WORDS
-plot(fitFla) ## PLOT CLUSTER OF WORDS
-rect.hclust(fitFla, k=5)
 
 flaClear2 <- flaClear %>%
               slice(c(1:500,1001:1500)) ## SELECT JUST 1000 ROWS
