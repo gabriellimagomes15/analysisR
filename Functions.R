@@ -13,10 +13,14 @@ library(RColorBrewer)
 library(knitr)
 library(gridExtra)
 
+#### GLOBAL VARIABLES ###
+pal = brewer.pal(8, "Dark2") ##palete of colors
+
+
 ###########################################################################################################################
 #### ---- FUNCTIONS ---- ####
 
-## Function to read comments
+## Function to read comments in CSV FILE
 readComments <- function(urlPath, clear = FALSE){
   comments <- fread(urlPath)
   comments <- comments %>% 
@@ -91,7 +95,7 @@ graphWords <- function(data, numCluster){
 }
 
 ## Function to clear comments. Need be a data frame
-cleanComments <- function(data){
+cleanComments <- function(data, stopWords = ""){
   if(class(data)[1] == "list"){
     commentsDF = do.call("rbind", lapply(data, as.data.frame));
   }else{
@@ -117,7 +121,7 @@ cleanComments <- function(data){
   commentsDF$text = gsub("[ \t]{2,}", "", commentsDF$text)
   commentsDF$text = gsub("^\\s+|\\s+$", "", commentsDF$text)
   commentsDF$text = tolower(commentsDF$text)
-  commentsDF$text = sapply(commentsDF$text, function(x) removeWords(x,c("pra",stopwords("pt"))))
+  commentsDF$text = sapply(commentsDF$text, function(x) removeWords(x,c(stopWords,stopwords("pt"))))
   
   # Removing Duplicate tweets and Removing null line
   commentsDF[,"DuplicateFlag"] = duplicated(commentsDF$text);
@@ -129,8 +133,8 @@ cleanComments <- function(data){
 
 
 ## Function to acess API Sentiments Analytics Microsoft AZRE
-sentimentalAPIMs <- function(commentsDF){ ## commentsDF is in Json
-  Microsoft_API_Key <- 'ae5c9486545742628f688d3cf387f98e';
+sentimentalAPIMs <- function(commentsDF){ ## commentsDF need be a Data Frame
+  Microsoft_API_Key <- 'YOUR API KEY';
   
   # Creating the request body for Text Analytics API
   commentsDF["language"] = "pt";
@@ -192,4 +196,41 @@ plotCountTokens <- function(data, team = ""){
                                           size = 0.5, linetype = "solid"),
           plot.background = element_rect(fill = "white"))
   return(plot)
+}
+
+
+## FUNCTION TO DESCRIBE SCORE OF SENTIMENTALS
+descSentimental <- function(sentiments){
+  ## Percent score posit sentiment
+  sentPosit <- sentiments %>%
+    group_by(time) %>%
+    mutate(total = n()) %>%
+    filter(Score > 0.7) %>%
+    mutate(freq  = round(  (n()/total) * 100,3) ) %>%
+    group_by(time,freq) %>%
+    summarise()%>%
+    mutate(sentimento = "Positivo")
+  
+  ## Percent score negative sentiment
+  sentNeg <- sentiments %>%
+    group_by(time) %>%
+    mutate(total = n()) %>%
+    filter(Score <  0.3) %>%
+    mutate(freq  = round(  (n()/total) * 100,3) ) %>%
+    group_by(time,freq) %>%
+    summarise()%>%
+    mutate(sentimento = "Negativo")
+  
+  ## Percent score neutral sentiment
+  sentNeut <- sentiments %>%
+    group_by(time) %>%
+    mutate(total = n()) %>%
+    filter(Score > 0.3 & Score < 0.7) %>%
+    mutate(freq  = round( (n()/total) * 100,3) ) %>%
+    group_by(time,freq) %>%
+    summarise() %>%
+    mutate(sentimento = "Neutro")
+  
+  ## Merge percent sentimentals
+  sentPercent <- rbind(sentNeg, sentPosit, sentNeut)
 }
