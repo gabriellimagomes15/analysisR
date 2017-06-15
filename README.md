@@ -10,7 +10,7 @@ This file make analysis sentimental of the comments in Facebook about soccer tea
 
 # AusXBra.R
 This file make analysis sentimental of the comments in Tweeter about game AUS x BRA in 13/07/2017
-** It is need import ``` source("urlPath/Functions.R")```. **
+**It is need import Functions.R** ``` source("urlPath/Functions.R")```. 
 
 ###### ANY QUESTIONS?
 Contact me in gabriel.lg08@gmail.com
