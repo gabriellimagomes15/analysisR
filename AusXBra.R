@@ -4,7 +4,7 @@
 library(twitteR)
 
 ## Exporting global variables and functions
-source("/media/gabrielgomes/CFA5-83C0/Analise\ de\ sentimentos/analysisR/Functions.R")
+source("yourPATH/Functions.R")
 
 ###### --------------------- ANALISE DE TWITTER ######
 consumer_key    <- ""
