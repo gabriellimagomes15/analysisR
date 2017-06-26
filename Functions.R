@@ -16,6 +16,12 @@ library(gridExtra)
 #### GLOBAL VARIABLES ###
 pal = brewer.pal(8, "Dark2") ##palete of colors
 
+titles.format <- theme(plot.title = element_text(face="bold", size=13, color='black'),
+                       plot.subtitle = element_text(color='grey50'),
+                       axis.title = element_text(size=9, color='grey50'), 
+                       axis.text = element_text(size=12, color='grey50'),
+                       plot.margin = unit(c(0.3,0.3,0.3,0.3), "cm"))
+
 
 ###########################################################################################################################
 #### ---- FUNCTIONS ---- ####
@@ -74,7 +80,7 @@ graphWords <- function(data, numCluster){
   gk  <- kmg$cluster
   
   # create nice colors for each cluster
-  gbrew <- c("red", brewer.pal(8, "Dark2"))
+  gbrew <- c(brewer.pal(12, "Paired"))
   gpal  <- rgb2hsv(col2rgb(gbrew))
   gcols <- rep("", length(gk))
   
@@ -187,13 +193,13 @@ countTokens <- function(data, numberToken = 1){
 ## FUNCTION TO DO PLOT
 plotCountTokens <- function(data, team = ""){
   plot <- ggplot(data[1:10,], aes(reorder(word,n), n)) +
-    geom_bar(stat = "identity", fill='#FCCB85', width=0.5) +
+    geom_bar(stat = "identity", fill='springgreen3', size = 0.4,colour="white", width=0.5) +
     labs(y=NULL, x=NULL, title=paste('Time: ',team, sep='')) +
     coord_flip() + titles.format +
+    geom_text(aes(label=n), position=position_dodge(width=0.95), vjust=0.5, hjust = 1.2) +
     theme(plot.title = element_text(size=13),
-          panel.background = element_rect(fill = "lightblue",
-                                          colour = "lightblue",
-                                          size = 0.5, linetype = "solid"),
+          panel.background = element_rect(size = 0.5,
+                                          linetype = "solid"),
           plot.background = element_rect(fill = "white"))
   return(plot)
 }
