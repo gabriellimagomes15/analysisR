@@ -12,6 +12,10 @@ This file make analysis sentimental of the comments in Facebook about soccer tea
 This file make analysis sentimental of the comments in Tweeter about game AUS x BRA in 13/07/2017
 **It is need import Functions.R** ``` source("urlPath/Functions.R")```. 
 
+# textMiningSoccer.R
+This file make text mining of the comments in Facebook about soccer teams of the Rio de Janeiro. It is continous of ** soccerSentimental.R**.
+**Is need import Functions.R** ``` soucer("urlPath/Functions.R")```
+
 ###### ANY QUESTIONS?
 Contact me in gabriel.lg08@gmail.com
 
