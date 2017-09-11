@@ -1,17 +1,15 @@
 ## Author: Gabriel Lima Gomes - 06/2017
 ## R file with differents libraries and Functions to make analysis and text mining about
+packages <- c("Rfacebook","data.table","tm","tidytext","wordcloud","dplyr","ggplot2","igraph","RColorBrewer","knitr","gridExtra","xml2","rvest")
 
-library(Rfacebook)
-library(data.table)
-library(tm)
-library(tidytext)
-library(wordcloud)
-library(dplyr)
-library(ggplot2)
-library(igraph)
-library(RColorBrewer)
-library(knitr)
-library(gridExtra)
+for(pkg in packages){
+  print(pkg)
+  if(!require(pkg, character.only = T)){
+    install.packages(pkg)
+  }
+  require(pkg)
+}
+
 
 #### GLOBAL VARIABLES ###
 pal = brewer.pal(8, "Dark2") ##palete of colors
@@ -101,13 +99,13 @@ graphWords <- function(data, numCluster){
 }
 
 ## Function to clear comments. Need be a data frame
-cleanComments <- function(data, stopWords = ""){
+cleanComments <- function(data, stopWords = "",stemming = F){
   if(class(data)[1] == "list"){
     commentsDF = do.call("rbind", lapply(data, as.data.frame));
   }else{
     commentsDF <- data
   }
-  commentsDF = subset(commentsDF, select = c(text));
+  #commentsDF = subset(commentsDF, select = c(text));
   
   # Tweet Cleasing
   commentsDF$text = gsub('http.* *', '', commentsDF$text);
@@ -124,10 +122,18 @@ cleanComments <- function(data, stopWords = ""){
   # remove not word
   commentsDF$text <- gsub("\\W"," ",commentsDF$text)
   # remove unnecessary spaces
-  commentsDF$text = gsub("[ \t]{2,}", "", commentsDF$text)
+  commentsDF$text = gsub("[ \t]{2,}", " ", commentsDF$text)
   commentsDF$text = gsub("^\\s+|\\s+$", "", commentsDF$text)
   commentsDF$text = tolower(commentsDF$text)
   commentsDF$text = sapply(commentsDF$text, function(x) removeWords(x,c(stopWords,stopwords("pt"))))
+  
+  
+  # remove special character
+  #commentsDF$text <- iconv(commentsDF$text, to = "ASCII//TRANSLIT")
+  
+  if(stemming){
+    commentsDF$text <- stemDocument(commentsDF$text,language = "portuguese")
+  }
   
   # Removing Duplicate tweets and Removing null line
   commentsDF[,"DuplicateFlag"] = duplicated(commentsDF$text);
